@@ -6,23 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
-@Controller
+@RestController
+@CrossOrigin("*")
 public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping()
+    @GetMapping("/allproducts")
     public ResponseEntity<Iterable<Product>> listProducts() {
         Iterable<Product> products = productService.findAll();
         if (products == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @PostMapping("/products/")
@@ -56,6 +56,10 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getP(@PathVariable long id){
+        return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
+    }
 
 
 }
